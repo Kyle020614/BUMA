@@ -1,0 +1,8 @@
+<Window x:Class="UserManagementApp.Views.UserView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="User Management" Height="350" Width="525">
+    <Grid>
+        <!-- UI components for displaying and managing users -->
+    </Grid>
+</Window>

@@ -17,6 +17,7 @@ namespace BUMA.ViewModels
         private string _password;
         private bool _isAdmin;
         private bool _isUser;
+        private readonly UserService _userService;
         public ICommand RegisterCommand { get; private set; }
         public string Username
         {
@@ -59,39 +60,44 @@ namespace BUMA.ViewModels
         }
 
 
-        public RegisterViewModel()
+        public RegisterViewModel(UserService userService)
         {
             RegisterCommand = new RelayCommand(Register);
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         private void Register()
         {
-            // Ensure Username and Password are not empty
+
             if (!string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password))
             {
-                // Check if either Admin or User is selected
                 if (_isAdmin || _isUser)
                 {
-                    // Determine the Access Level
                     string accessLevel = _isAdmin ? "Admin" : "User";
 
-                    // Hash the Password (using MD5 for this example)
                     string passwordHash = ComputeMD5Hash(Password);
 
-                    // Create a new User object
                     User newUser = new User
                     {
                         Username = Username,
                         PasswordHash = passwordHash,
                         AccessLevel = accessLevel
                     };
-                    // Save the user to the database
-                    // You would replace this with your database logic
-                    SaveUserToDatabase(newUser);
 
-                    System.Windows.MessageBox.Show("User registered successfully!");
+                    bool ExistingUser = _userService.ExistingUser(Username);
+                    if (ExistingUser == false)
+                    {
+                        SaveUserToDatabase(newUser);
 
-                    OnRegistrationSuccess();
+                        System.Windows.MessageBox.Show("User registered successfully!");
+
+                        OnRegistrationSuccess();
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show("Username Already in use.");
+                        return;
+                    }
                 }
                 else
                 {
@@ -126,19 +132,16 @@ namespace BUMA.ViewModels
             }
             catch (Exception ex)
             {
-                // Handle exceptions (e.g., log the error or display a message)
                 System.Windows.MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }
-
-        // Method to hash the password using MD5
         private string ComputeMD5Hash(string input)
         {
             using (var md5 = System.Security.Cryptography.MD5.Create())
             {
                 byte[] inputBytes = Encoding.ASCII.GetBytes(input);
                 byte[] hashBytes = md5.ComputeHash(inputBytes);
-                return Convert.ToHexString(hashBytes); // Convert the byte array to a hex string
+                return Convert.ToHexString(hashBytes);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using BUMA.ViewModels;
+﻿using BUMA.Data;
+using BUMA.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,28 +17,29 @@ namespace BUMA.Views
         {
             InitializeComponent();
 
-            // Set the ViewModel
-            RegisterViewModel viewModel = new RegisterViewModel();
-            viewModel.RegistrationSuccess += OnRegistrationSuccess; // Subscribe to event
+
+            var userService = new UserService(new BUMADbContext());
+
+            RegisterViewModel viewModel = new RegisterViewModel(userService);
+            viewModel.RegistrationSuccess += OnRegistrationSuccess;
             DataContext = viewModel;
         }
 
-        // Method to handle successful registration and window change
         private void OnRegistrationSuccess()
         {
-            // Close the RegisterView window
-            this.Close();
-
-            // Open the LoginView window
             var loginView = new LoginView();
             loginView.Show();
+
+            this.Close();
+
+           
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             var passwordBox = (PasswordBox)sender;
             var viewModel = (RegisterViewModel)this.DataContext;
-            viewModel.Password = passwordBox.Password; // Update the ViewModel's Password
+            viewModel.Password = passwordBox.Password;
         }
     }
 }

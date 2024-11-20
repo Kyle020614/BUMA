@@ -1,4 +1,6 @@
-﻿using BUMA.ViewModels;
+﻿using BUMA.Data;
+using BUMA.ViewModels;
+using BUMA.Views;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -6,18 +8,23 @@ namespace YourApp.Views
 {
     public partial class LoginView : Window
     {
+        private LoginViewModel _viewModel;
         public LoginView()
         {
             InitializeComponent();
-            this.DataContext = new LoginViewModel();  // Bind to the ViewModel
+
+            var userService = new UserService(new BUMADbContext());
+            var viewModel = new LoginViewModel(userService);
+            viewModel.SetWindowInstance(this);
+            this.DataContext = viewModel; 
+
         }
 
-        // Define the event handler for PasswordChanged
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             var passwordBox = (PasswordBox)sender;
             var viewModel = (LoginViewModel)this.DataContext;
-            viewModel.Password = passwordBox.Password; // Update the ViewModel's Password
+            viewModel.Password = passwordBox.Password; 
         }
     }
 }

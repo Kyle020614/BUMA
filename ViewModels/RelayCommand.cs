@@ -20,12 +20,12 @@ namespace BUMA.ViewModels
 
         public void Execute(object parameter)
         {
-            _execute(); // Executes the passed Action
+            _execute(); 
         }
 
         public bool CanExecute(object parameter)
         {
-            return true; // Always returns true, meaning the command can always execute
+            return true; 
         }
     }
 }

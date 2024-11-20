@@ -12,7 +12,6 @@ namespace BUMA.Data
     {
         public DbSet<User> Users { get; set; }
 
-        // Configure the connection string in OnConfiguring
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=.;Database=BUMA;Trusted_Connection=True;TrustServerCertificate=True;");
